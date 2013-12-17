@@ -122,7 +122,7 @@ namespace MyGame1
                                 Blocks.Add(new Block(x, y, 32, 32, "Spike", this));
                                 break;
                             case "H":
-                                hero = new Hero(x - 8, y - 8, 16, 16, 5, new List<string>() { "Balls", "Balls45", "Balls90", "Balls135", "Balls180", "Balls225", "Balls270", "Balls315" }, this);
+                                hero = new Hero(x, y, 32, 32, 5, new List<string>() { "Balls", "Balls45", "Balls90", "Balls135", "Balls180", "Balls225", "Balls270", "Balls315" }, this);
                                 break;
                             default:
                                 break;
@@ -307,13 +307,16 @@ namespace MyGame1
         private void DrawSprite(BaseSprite sprite)
         {
             Rectangle Pos;
+            Vector2 Origin;
             switch (sprite.Type)
             {
                 case TypeSprite.Character:
                     Pos = new Rectangle(0, 0, sprite.Width, sprite.Height);
+                    Origin = new Vector2(sprite.Width, sprite.Height);
                     break;
                 default:
                     Pos = new Rectangle(0, 0, sprite.Width, sprite.Height);
+                    Origin = new Vector2(sprite.Width, sprite.Height);
                     break;
             }
 
@@ -324,7 +327,7 @@ namespace MyGame1
                 Pos,
                 Color.White,
                 0.0f,
-                new Vector2(sprite.Width, sprite.Height),
+                Origin,
                 Vector2.One,
                 SpriteEffects.None,
                 0f);
@@ -364,7 +367,7 @@ namespace MyGame1
 
                     if (boxHero.Maximum.Y >= boxBlock.Minimum.Y && boxHero.Maximum.Y < (boxBlock.Maximum.Y - (block.Height / 2)))
                     { //Collision bottom side of the hero
-                        hero.SetPosition(hero.Position.X, block.Position.Y - block.Height);
+                        hero.SetPosition(hero.Position.X, block.Position.Y - (hero.Height + 1));
                         hero.CanJump = true;
                         hero.IsJumping = false;
                     }
