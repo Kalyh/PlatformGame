@@ -122,7 +122,7 @@ namespace MyGame1
                                 Blocks.Add(new Block(x, y, 32, 32, "Spike", this));
                                 break;
                             case "H":
-                                hero = new Hero(x, y, 32, 32, 5, new List<string>() { "Balls", "Balls45", "Balls90", "Balls135", "Balls180", "Balls225", "Balls270", "Balls315" }, this);
+                                hero = new Hero(x - 8, y - 8, 16, 16, 5, new List<string>() { "Balls", "Balls45", "Balls90", "Balls135", "Balls180", "Balls225", "Balls270", "Balls315" }, this);
                                 break;
                             default:
                                 break;
@@ -208,6 +208,7 @@ namespace MyGame1
             
             if(hero.Position.Y >= _surface)
             {
+                hero.SetPosition(hero.Position.X, _surface);
                 hero.IsJumping = false;
                 hero.CanJump = true;
             }
@@ -305,17 +306,22 @@ namespace MyGame1
         #region ----- PRIVATE METHODS -----
         private void DrawSprite(BaseSprite sprite)
         {
+            Rectangle Pos;
             switch (sprite.Type)
             {
                 case TypeSprite.Character:
+                    Pos = new Rectangle(0, 0, sprite.Width, sprite.Height);
+                    break;
                 default:
-                    spriteBatch.Begin(SpriteSortMode.BackToFront, GraphicsDevice.BlendStates.NonPremultiplied, null, null, null, null, _camera.get_transformation()); //SpriteSortMode.Deferred, GraphicsDevice.BlendStates.NonPremultiplied
+                    Pos = new Rectangle(0, 0, sprite.Width, sprite.Height);
                     break;
             }
+
+            spriteBatch.Begin(SpriteSortMode.BackToFront, GraphicsDevice.BlendStates.NonPremultiplied, null, null, null, null, _camera.get_transformation()); //SpriteSortMode.Deferred, GraphicsDevice.BlendStates.NonPremultiplied
             spriteBatch.Draw(
                 sprite.Texture,
                 sprite.Position,
-                new Rectangle(0, 0, sprite.Width, sprite.Height),
+                Pos,
                 Color.White,
                 0.0f,
                 new Vector2(sprite.Width, sprite.Height),
@@ -340,22 +346,25 @@ namespace MyGame1
                 BoundingBox boxBlock = block.GetBoundingBox();
                 if (boxHero.Intersects(boxBlock))
                 {
-                    //Hero max X: 234
-                    //Hero max Y: 496
-                    //Hero max Z: 0
-                    //Spike max X: 266
-                    //Spike max Y: 496
-                    //Spike max Z: 0
-                    //Hero min X: 202
-                    //Hero min Y: 464
-                    //Hero min Z: 0
-                    //Spike min X: 234
-                    //Spike min Y: 464
-                    //Spike min Z: 0
+                    //Console.WriteLine("BEFORE Hero position: " + hero.Position);
+                    //Console.WriteLine("BEFORE Hero min: " + boxHero.Minimum);
+                    //Console.WriteLine("BEFORE Hero max: " + boxHero.Maximum);
+                    //Console.WriteLine("BEFORE Block position: " + block.Position);
+                    //Console.WriteLine("BEFORE Block min: " + boxBlock.Minimum);
+                    //Console.WriteLine("BEFORE Block max: " + boxBlock.Maximum);
+                    
+                    //boxBlock = block.GetBoundingBox();
+                    //boxHero = hero.GetBoundingBox();
+                    //Console.WriteLine("AFTER Hero position: " + hero.Position);
+                    //Console.WriteLine("AFTER Hero min: " + boxHero.Minimum);
+                    //Console.WriteLine("AFTER Hero max: " + boxHero.Maximum);
+                    //Console.WriteLine("AFTER Block position: " + block.Position);
+                    //Console.WriteLine("AFTER Block min: " + boxBlock.Minimum);
+                    //Console.WriteLine("AFTER Block max: " + boxBlock.Maximum);
 
                     if (boxHero.Maximum.Y >= boxBlock.Minimum.Y && boxHero.Maximum.Y < (boxBlock.Maximum.Y - (block.Height / 2)))
                     { //Collision bottom side of the hero
-                        hero.SetPosition(hero.Position.X, block.Position.Y - (hero.Height + 1));
+                        hero.SetPosition(hero.Position.X, block.Position.Y - block.Height);
                         hero.CanJump = true;
                         hero.IsJumping = false;
                     }

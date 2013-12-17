@@ -53,7 +53,11 @@ namespace MyGame1.Model
 
                     if (!this._isBlockedRight)
                     {
-                        this._game.Camera.Move(this._speed);
+                        if (this._position.X >= this._game.Camera.Pos.X)
+                        {
+                            this._game.Camera.Move(this._speed);
+                        }
+
                         if (this._currentTextureIndex + 1 <= (this.ListTexture.Count() - 1))
                         {
                             this._currentTextureIndex += 1;
@@ -76,7 +80,11 @@ namespace MyGame1.Model
 
                     if (!this._isBlockedLeft)
                     {
-                        this._game.Camera.Move(- this._speed);
+                        if (this._position.X <= this._game.Camera.Pos.X)
+                        {
+                            this._game.Camera.Move(-this._speed);
+                        }
+
                         if (this._currentTextureIndex - 1 >= 0)
                         {
                             this._currentTextureIndex -= 1;
