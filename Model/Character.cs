@@ -10,6 +10,8 @@ namespace MyGame1.Model
     class Character : BaseSprite
     {
         #region ----- PROTECTED VARIABLE -----
+        protected float _speed = 5f;
+
         protected string[] _listTexture;
 
         protected int _currentTextureIndex = 0;
@@ -19,6 +21,8 @@ namespace MyGame1.Model
         #endregion
 
         #region ----- PROPERTIES -----
+        public float Speed { get { return _speed; } set { _speed = value;} }
+
         public string[] ListTexture { get { return _listTexture; } }
 
         public int CurrentTextureIndex { get { return _currentTextureIndex; } }

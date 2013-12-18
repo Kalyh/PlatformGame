@@ -52,11 +52,12 @@ namespace MyGame1
         private int fpsCounter = 0;
 
         private float _surface;
-        private float _gravity = 5;
+        private Vector2 _gravity = new Vector2(0, 9.8f);
         #endregion
 
         #region ----- PROPERTIES -----
         public float Surface { get { return _surface; } }
+        public Vector2 Gravity { get { return _gravity; } }
 
         public Camera2D Camera { get { return _camera; } }
 
@@ -106,8 +107,8 @@ namespace MyGame1
                 _worldHeight = lines.Count() * _sectionHeight;
                 _worldWidth = lines[0].Split(' ').Count() * _sectionWidth;
 
-                int x = _sectionWidth;
-                int y = _sectionHeight;
+                int x = 0;
+                int y = 0;
                 foreach (var line in lines)
                 {
                     x = _sectionWidth;
@@ -122,7 +123,7 @@ namespace MyGame1
                                 Blocks.Add(new Block(x, y, 32, 32, "Spike", this));
                                 break;
                             case "H":
-                                hero = new Hero(x, y, 32, 32, 5, new List<string>() { "Balls", "Balls45", "Balls90", "Balls135", "Balls180", "Balls225", "Balls270", "Balls315" }, this);
+                                hero = new Hero(x, y, 16, 16, 5, new List<string>() { "Balls", "Balls45", "Balls90", "Balls135", "Balls180", "Balls225", "Balls270", "Balls315" }, this);
                                 break;
                             default:
                                 break;
@@ -187,31 +188,7 @@ namespace MyGame1
                 fpsCounter = 0;
             }
 
-            if(hero.IsJumping && !hero.IsFinishJump)
-            {
-                if (hero.CurrentJump >= hero.Jump)
-                {
-                    hero.IsFinishJump = true;
-                }
-                else
-                {
-                    hero.CurrentJump += _gravity;
-                    hero.SetPosition(hero.Position.X, hero.Position.Y - _gravity);
-                }
-            }
-            
-            if (hero.IsJumping && hero.IsFinishJump && hero.Position.Y < _surface)
-            {
-                hero.CurrentJump -= _gravity;
-                hero.SetPosition(hero.Position.X, hero.Position.Y + _gravity);
-            }
-            
-            if(hero.Position.Y >= _surface)
-            {
-                hero.SetPosition(hero.Position.X, _surface);
-                hero.IsJumping = false;
-                hero.CanJump = true;
-            }
+            hero.DoJump((float)gameTime.ElapsedGameTime.TotalSeconds);
 
             var pressedKeys = keyboardState.GetPressedKeys();
             foreach (var key in pressedKeys)
@@ -240,51 +217,6 @@ namespace MyGame1
             // Clears the screen with the Color.CornflowerBlue
             GraphicsDevice.Clear(Color.Black);
 
-
-            /*foreach (var pos in previousPos)
-            {
-                spriteBatch.Begin(SpriteSortMode.Deferred, GraphicsDevice.BlendStates.NonPremultiplied);
-                spriteBatch.Draw(
-                   ballsTexture,
-                   new Vector2(pos[0], pos[1]),
-                   new Rectangle(0, 0, 32, 32),
-                   Color.White,
-                   0.0f,
-                   new Vector2(16, 16),
-                   Vector2.One,
-                   SpriteEffects.None,
-                   0f);
-                spriteBatch.End();
-            }
-
-            if (mouseState.Left == ButtonState.Pressed)
-            {
-                posX = mouseState.X * this.Window.ClientBounds.Right;
-                posY = mouseState.Y * this.Window.ClientBounds.Bottom;
-            }
-
-            if (mouseState.Right == ButtonState.Pressed)
-            {
-                float tmpX = mouseState.X * this.Window.ClientBounds.Right;
-                float tmpY = mouseState.Y * this.Window.ClientBounds.Bottom;
-
-                spriteBatch.Begin(SpriteSortMode.Deferred, GraphicsDevice.BlendStates.NonPremultiplied);
-                spriteBatch.Draw(
-                   ballsTexture,
-                   new Vector2(tmpX, tmpY),
-                   new Rectangle(0, 0, 32, 32),
-                   Color.White,
-                   0.0f,
-                   new Vector2(16, 16),
-                   Vector2.One,
-                   SpriteEffects.None,
-                   0f);
-                spriteBatch.End();
-
-                previousPos.Add(new List<float> { tmpX, tmpY });
-            }*/
-
-
             // ------------------------------------------------------------------------
             // Use SpriteBatch to draw some balls on the screen using NonPremultiplied mode
             // as the sprite texture used is not premultiplied
@@ -311,34 +243,23 @@ namespace MyGame1
             switch (sprite.Type)
             {
                 case TypeSprite.Character:
-                    Pos = new Rectangle(0, 0, sprite.Width, sprite.Height);
-                    Origin = new Vector2(sprite.Width, sprite.Height);
+                    Pos = new Rectangle(0, 0, sprite.Box.Width, sprite.Box.Height);
+                    Origin = new Vector2(sprite.Box.Width, sprite.Box.Height);
                     break;
                 default:
-                    Pos = new Rectangle(0, 0, sprite.Width, sprite.Height);
-                    Origin = new Vector2(sprite.Width, sprite.Height);
+                    Pos = new Rectangle(0, 0, sprite.Box.Width, sprite.Box.Height);
+                    Origin = new Vector2(sprite.Box.Width, sprite.Box.Height);
                     break;
             }
 
             spriteBatch.Begin(SpriteSortMode.BackToFront, GraphicsDevice.BlendStates.NonPremultiplied, null, null, null, null, _camera.get_transformation()); //SpriteSortMode.Deferred, GraphicsDevice.BlendStates.NonPremultiplied
-            spriteBatch.Draw(
-                sprite.Texture,
-                sprite.Position,
-                Pos,
-                Color.White,
-                0.0f,
-                Origin,
-                Vector2.One,
-                SpriteEffects.None,
-                0f);
+            spriteBatch.Draw(sprite.Texture, sprite.Box, Color.White);
             spriteBatch.End();
         }
 
         private void CheckForCollision()
         {
-            BoundingBox boxHero = hero.GetBoundingBox();
-
-            if (hero.Position.Y < _surface)
+            if (hero.Box.Y < _surface)
             {
                 hero.CanJump = false;
                 hero.IsJumping = true;
@@ -346,43 +267,27 @@ namespace MyGame1
 
             foreach(var block in Blocks)
             {
-                BoundingBox boxBlock = block.GetBoundingBox();
-                if (boxHero.Intersects(boxBlock))
+                if (hero.Box.Intersects(block.Box))
                 {
-                    //Console.WriteLine("BEFORE Hero position: " + hero.Position);
-                    //Console.WriteLine("BEFORE Hero min: " + boxHero.Minimum);
-                    //Console.WriteLine("BEFORE Hero max: " + boxHero.Maximum);
-                    //Console.WriteLine("BEFORE Block position: " + block.Position);
-                    //Console.WriteLine("BEFORE Block min: " + boxBlock.Minimum);
-                    //Console.WriteLine("BEFORE Block max: " + boxBlock.Maximum);
-                    
-                    //boxBlock = block.GetBoundingBox();
-                    //boxHero = hero.GetBoundingBox();
-                    //Console.WriteLine("AFTER Hero position: " + hero.Position);
-                    //Console.WriteLine("AFTER Hero min: " + boxHero.Minimum);
-                    //Console.WriteLine("AFTER Hero max: " + boxHero.Maximum);
-                    //Console.WriteLine("AFTER Block position: " + block.Position);
-                    //Console.WriteLine("AFTER Block min: " + boxBlock.Minimum);
-                    //Console.WriteLine("AFTER Block max: " + boxBlock.Maximum);
-
-                    if (boxHero.Maximum.Y >= boxBlock.Minimum.Y && boxHero.Maximum.Y < (boxBlock.Maximum.Y - (block.Height / 2)))
+                    if (hero.Box.Bottom >= block.Box.Top && hero.Box.Bottom < (block.Box.Bottom - (block.Box.Height / 2)))
                     { //Collision bottom side of the hero
-                        hero.SetPosition(hero.Position.X, block.Position.Y - (hero.Height + 1));
+                        hero.SetPositionY(block.Box.Top - (hero.Box.Height));
                         hero.CanJump = true;
                         hero.IsJumping = false;
+                        hero.Velocity = Vector2.Zero;
                     }
-                    else if (boxHero.Minimum.Y <= boxBlock.Maximum.Y && boxHero.Minimum.Y > (boxBlock.Minimum.Y + (block.Height /2)))
+                    else if (hero.Box.Top <= block.Box.Bottom && hero.Box.Top > (block.Box.Top + (block.Box.Height / 2)))
                     {
                         hero.IsFinishJump = true;
                     }
-                    else if (boxHero.Minimum.X <= boxBlock.Maximum.X && boxHero.Minimum.X > (boxBlock.Minimum.X + (block.Width / 2)))
+                    else if (hero.Box.Left <= block.Box.Right && hero.Box.Left > (block.Box.Left + (block.Box.Width / 2)))
                     { //Collision left side of the hero
-                        hero.SetPosition(block.Position.X + (hero.Width), hero.Position.Y);
+                        hero.SetPositionX(block.Box.Right);
                         hero.IsBlockedLeft = true;
                     }
-                    else if (boxHero.Maximum.X >= boxBlock.Minimum.X && boxHero.Maximum.X < (boxBlock.Maximum.X - (block.Width / 2)))
+                    else if (hero.Box.Right >= block.Box.Left && hero.Box.Right < (block.Box.Right - (block.Box.Width / 2)))
                     { //Collision right side of the hero
-                        hero.SetPosition(block.Position.X - (hero.Width), hero.Position.Y);
+                        hero.SetPositionX(block.Box.Left - hero.Box.Width);
                         hero.IsBlockedRight = true;
                     }
                 }

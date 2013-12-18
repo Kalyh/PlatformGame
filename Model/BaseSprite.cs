@@ -15,13 +15,9 @@ namespace MyGame1.Model
         protected string _textureName;
         protected Texture2D _texture;
 
-        protected Vector2 _position = Vector2.Zero;
-        protected Vector2 _speed = new Vector2(5f, 0f);
+        protected Rectangle _box;
 
         protected TypeSprite _typeSprite;
-
-        protected int _width;
-        protected int _height;
 
         protected MyGame _game;
         #endregion
@@ -30,13 +26,9 @@ namespace MyGame1.Model
         public string TextureName { get { return _textureName; } }
         public Texture2D Texture { get { return _texture; } }
 
-        public Vector2 Position { get { return _position; } }
-        public Vector2 Speed { get { return _speed; } }
+        public Rectangle Box { get { return _box; } set { _box = value; } }
 
         public TypeSprite Type { get { return _typeSprite; } }
-
-        public int Width { get { return _width; } }
-        public int Height { get { return _height; } }
         #endregion
 
         #region ----- CONSTRUCTORS -----
@@ -44,14 +36,10 @@ namespace MyGame1.Model
         {
             this._textureName = textureName;
 
-            this._position = new Vector2(x, y);
-            this._speed = new Vector2(10f, 0f);
+            this._box = new Rectangle((int)x, (int)y, width, height);
 
             this._typeSprite = type;
             this._game = game;
-
-            this._width = width;
-            this._height = height;
         }
         #endregion
 
@@ -61,20 +49,14 @@ namespace MyGame1.Model
             this._texture = texture;
         }
 
-        public void SetPosition(float x, float y)
+        public void SetPositionX(int x)
         {
-            _position = new Vector2(x, y);
+            _box.X = x;
         }
 
-        public void SetSpeed(float speed)
+        public void SetPositionY(int y)
         {
-            this._speed = new Vector2(speed, 0);
-        }
-
-        public BoundingBox GetBoundingBox()
-        {
-            return new BoundingBox(new Vector3(_position.X - (_width / 2), _position.Y - (_height / 2), 0),
-                                   new Vector3(_position.X + (_width / 2), _position.Y + (_height / 2), 0));
+            _box.Y = y;
         }
         #endregion
     }

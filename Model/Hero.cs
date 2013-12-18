@@ -19,6 +19,8 @@ namespace MyGame1.Model
         private bool _canJump = true;
         private bool _isJumping = false;
         private bool _isFinishJump = true;
+
+        private Vector2 _velocity = Vector2.Zero;
         #endregion
 
         #region ----- PROPERTIES -----
@@ -28,13 +30,15 @@ namespace MyGame1.Model
         public bool CanJump { get { return _canJump; } set { _canJump = value; } }
         public bool IsJumping { get { return _isJumping; } set { _isJumping = value; } }
         public bool IsFinishJump { get { return _isFinishJump; } set { _isFinishJump = value; } }
+
+        public Vector2 Velocity { get { return _velocity; } set { _velocity = value; } }
         #endregion
 
         #region ----- CONSTRUCTORS -----
         public Hero(float x, float y, int width, int height, float speed, List<string> textureName, MyGame game)
             : base(x, y, width, height, textureName, game)
         {
-            this._speed = new Vector2(speed, 0f);
+            this._speed = speed;
         }
         #endregion
 
@@ -44,18 +48,19 @@ namespace MyGame1.Model
             switch (direction)
             {
                 case Keys.Right:
-                    this._position += this._speed;
-                    if (this._position.X > this._game.WorldWidth)
+                    this._box.X += (int)this._speed;
+
+                    if (this._box.X > this._game.WorldWidth)
                     {
-                        this._position.X = this._game.WorldWidth;
+                        this._box.X = this._game.WorldWidth;
                         break;
                     }
 
                     if (!this._isBlockedRight)
                     {
-                        if (this._position.X >= this._game.Camera.Pos.X)
+                        if (this._box.X >= this._game.Camera.Pos.X)
                         {
-                            this._game.Camera.Move(this._speed);
+                            this._game.Camera.Move(new Vector2(this._speed, 0));
                         }
 
                         if (this._currentTextureIndex + 1 <= (this.ListTexture.Count() - 1))
@@ -71,18 +76,19 @@ namespace MyGame1.Model
                     }
                     break;
                 case Keys.Left:
-                    this._position -= this._speed;
-                    if (this._position.X < this._width)
+                    this._box.X -= (int)this._speed;
+
+                    if (this._box.X < this._box.Width)
                     {
-                        this._position.X = this._width;
+                        this._box.X = this._box.Width;
                         break;
                     }
 
                     if (!this._isBlockedLeft)
                     {
-                        if (this._position.X <= this._game.Camera.Pos.X)
+                        if (this._box.X <= this._game.Camera.Pos.X)
                         {
-                            this._game.Camera.Move(-this._speed);
+                            this._game.Camera.Move(new Vector2(-this._speed, 0));
                         }
 
                         if (this._currentTextureIndex - 1 >= 0)
@@ -109,6 +115,35 @@ namespace MyGame1.Model
             }
             this._isBlockedLeft = false;
             this._isBlockedRight = false;
+        }
+
+        public void DoJump(float time)
+        {
+            if (_isJumping && !_isFinishJump)
+            {
+                if (_currentJump >= _jump)
+                {
+                    _isFinishJump = true;
+                }
+                else
+                {
+                    _currentJump += this._game.Gravity.Y;
+                    _box.Y -= (int)this._game.Gravity.Y;
+                }
+            }
+
+            if (_isJumping && _isFinishJump && _box.Y < this._game.Surface)
+            {
+                _currentJump -= this._game.Gravity.Y;
+                _box.Y += (int)this._game.Gravity.Y;
+            }
+
+            if (_box.Bottom >= this._game.Surface)
+            {
+                _box.Y = (int)this._game.Surface - _box.Height;
+                _isJumping = false;
+                _canJump = true;
+            }
         }
         #endregion
     }
