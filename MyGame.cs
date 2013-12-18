@@ -1,9 +1,13 @@
-﻿using MyGame1.Model;
+﻿using MP3player;
+using MyGame1.Model;
 using MyGame1.Utils;
 using SharpDX;
+using SharpDX.IO;
+using SharpDX.MediaFoundation;
 using SharpDX.Toolkit;
 using SharpDX.Toolkit.Graphics;
 using SharpDX.Toolkit.Input;
+using SharpDX.XAudio2;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -11,6 +15,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Runtime.InteropServices;
 
 namespace MyGame1
 {
@@ -53,6 +58,9 @@ namespace MyGame1
 
         private float _surface;
         private Vector2 _gravity = new Vector2(0, 9.8f);
+
+        private AudioPlayer audiop = new AudioPlayer();
+
         #endregion
 
         #region ----- PROPERTIES -----
@@ -123,7 +131,7 @@ namespace MyGame1
                                 Blocks.Add(new Block(x, y, 32, 32, "Spike", this));
                                 break;
                             case "H":
-                                hero = new Hero(x, y, 16, 16, 5, new List<string>() { "Balls", "Balls45", "Balls90", "Balls135", "Balls180", "Balls225", "Balls270", "Balls315" }, this);
+                                hero = new Hero(x, y, 32, 32, 5, new List<string>() { "Balls", "Balls45", "Balls90", "Balls135", "Balls180", "Balls225", "Balls270", "Balls315" }, this);
                                 break;
                             default:
                                 break;
@@ -147,6 +155,9 @@ namespace MyGame1
             AllSprite.AddRange(Blocks);
 
             _camera = new Camera2D(this);
+
+            audiop.Open(Directory.GetParent(System.IO.Directory.GetCurrentDirectory()).Parent.FullName + @"\Content\03_rocket_flight.wav");
+            audiop.Play(false);            
         }
 
         protected override void LoadContent()
