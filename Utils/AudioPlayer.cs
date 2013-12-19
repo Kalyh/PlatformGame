@@ -9,6 +9,7 @@ namespace MP3player
     {
         private string Pcommand;
         private bool isOpen;
+        public string media;
 
         [DllImport("winmm.dll")]
         private static extern long mciSendString(string strCommand,
@@ -17,8 +18,9 @@ namespace MP3player
         /// <SUMMARY>
         /// Not much to construct here
         /// </SUMMARY>
-        public AudioPlayer()
+        public AudioPlayer(string m)
         {
+            media = m;
         }
 
         /// <SUMMARY>
@@ -26,7 +28,7 @@ namespace MP3player
         /// </SUMMARY>
         public void Close()
         {
-            Pcommand = "close MediaFile";
+            Pcommand = "close " + media;
             mciSendString(Pcommand, null, 0, 0);
             isOpen = false;
         }
@@ -37,7 +39,7 @@ namespace MP3player
         /// <param name="sFileName" />This is the audio file's path and filename</param />
         public void Open(string sFileName)
         {
-            Pcommand = "open \"" + sFileName + "\" type MPEGVideo alias MediaFile";
+            Pcommand = "open \"" + sFileName + "\" type waveaudio alias " + media;
             mciSendString(Pcommand, null, 0, 0);
             isOpen = true;
         }
@@ -46,11 +48,11 @@ namespace MP3player
         /// Plays selected audio file
         /// </SUMMARY>
         /// <param name="loop" />If True,audio file will repeat</param />
-        public void Play(bool loop)
+        public void Play()
         {
             if (isOpen)
             {
-                Pcommand = "play MediaFile notify";
+                Pcommand = "play " + media;
                 mciSendString(Pcommand, null, 0, 0);
             }
         }
@@ -60,19 +62,14 @@ namespace MP3player
         /// </SUMMARY>
         public void Pause()
         {
-            Pcommand = "pause MediaFile";
+            Pcommand = "pause " + media;
             mciSendString(Pcommand, null, 0, 0);
         }
 
-        /// <SUMMARY>
-        /// Returns the current status player: playing, paused, stopped, etc.
-        /// </SUMMARY>
-        public string Status()
+        public void kill()
         {
-            int i = 128;
-            System.Text.StringBuilder stringBuilder = new System.Text.StringBuilder(i);
-            mciSendString("status MediaFile mode", stringBuilder, i, 0);
-            return stringBuilder.ToString();
+            Pcommand = "close " + media;
+            mciSendString(Pcommand, null, 0, 0); 
         }
 
         /// <SUMMARY>

@@ -23,6 +23,8 @@ namespace MyGame1.Model
         private bool _isFinishJump = true;
 
         private Vector2 _velocity = Vector2.Zero;
+
+        private AudioPlayer audiop;
         #endregion
 
         #region ----- PROPERTIES -----
@@ -41,6 +43,8 @@ namespace MyGame1.Model
             : base(x, y, width, height, textureName, game)
         {
             this._speed = speed;
+            audiop = new AudioPlayer("jump");
+          //  audiop.Open(Directory.GetParent(System.IO.Directory.GetCurrentDirectory()).Parent.FullName + @"\Content\Mario_saut.wav");
         }
         #endregion
 
@@ -108,6 +112,9 @@ namespace MyGame1.Model
                 case Keys.Space:
                     if (_canJump)
                     {
+                        audiop.Open(Directory.GetParent(System.IO.Directory.GetCurrentDirectory()).Parent.FullName + @"\Content\Mario_saut.wav");
+                        audiop.Play();
+
                         _currentJump = 0;
                         _canJump = false;
                         _isJumping = true;
@@ -139,12 +146,13 @@ namespace MyGame1.Model
                 _currentJump -= this._game.Gravity.Y;
                 _box.Y += (int)this._game.Gravity.Y;
             }
-
+       
             if (_box.Bottom >= this._game.Surface)
             {
                 _box.Y = (int)this._game.Surface - _box.Height;
                 _isJumping = false;
                 _canJump = true;
+                audiop.kill();
             }
         }
         #endregion

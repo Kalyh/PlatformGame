@@ -59,7 +59,7 @@ namespace MyGame1
         private float _surface;
         private Vector2 _gravity = new Vector2(0, 9.8f);
 
-        private AudioPlayer audiop = new AudioPlayer();
+        private AudioPlayer audiop;
 
         #endregion
 
@@ -93,6 +93,8 @@ namespace MyGame1
 
             // Initialize input mouse system
             mouse = new MouseManager(this);
+
+            audiop = new AudioPlayer("rocket");
         }
         #endregion
 
@@ -149,6 +151,7 @@ namespace MyGame1
             Blocks.Add(new Block(650f, _surface, 32, 32, "Spike", this));
             Blocks.Add(new Block(150f, _surface - 50, 32, 32, "Spike", this));*/
 
+
             Characters.Add(hero);
 
             AllSprite.AddRange(Characters);
@@ -156,8 +159,8 @@ namespace MyGame1
 
             _camera = new Camera2D(this);
 
-            audiop.Open(Directory.GetParent(System.IO.Directory.GetCurrentDirectory()).Parent.FullName + @"\Content\03_rocket_flight.wav");
-            audiop.Play(false);            
+           audiop.Open(Directory.GetParent(System.IO.Directory.GetCurrentDirectory()).Parent.FullName + @"\Content\03_rocket_flight.wav");
+           audiop.Play();            
         }
 
         protected override void LoadContent()

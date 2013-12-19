@@ -82,6 +82,7 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="Content\03_rocket_flight.wav" />
+    <Content Include="Content\Mario_saut.wav" />
     <Content Include="World\1.map">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
