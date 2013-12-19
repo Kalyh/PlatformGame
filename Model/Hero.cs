@@ -152,8 +152,10 @@ namespace MyGame1.Model
                 _box.Y = (int)this._game.Surface - _box.Height;
                 _isJumping = false;
                 _canJump = true;
-                audiop.kill();
             }
+
+            if (!IsJumping)
+                audiop.kill();
         }
         #endregion
     }
