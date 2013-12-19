@@ -1,5 +1,7 @@
-﻿using System;
+﻿using MyGame1.Model;
+using System;
 using System.Collections.Generic;
+using System.Threading;
 
 namespace MyGame1
 {
@@ -18,6 +20,11 @@ namespace MyGame1
 #endif
         static void Main()
         {
+            SplashScreen ss = new SplashScreen();
+            ss.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
+            ss.Show();
+            Thread.Sleep(2000);
+            ss.Close();
             using (var program = new MyGame())
                 program.Run();
 
