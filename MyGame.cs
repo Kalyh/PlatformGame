@@ -44,6 +44,7 @@ namespace Gloopy
         private List<Character> Characters = new List<Character>();
         private List<Block> Blocks = new List<Block>();
         private List<Sprite> Sprites = new List<Sprite>();
+        private List<Collectable> Collectables = new List<Collectable>();
 
         private SpriteFont arial16Font;
 
@@ -132,6 +133,9 @@ namespace Gloopy
                             case "S":
                                 Blocks.Add(new Block(x, y, 32, 32, "Spike", this));
                                 break;
+                            case "C":
+                                Collectables.Add(new Collectable(x + 8, y + 8, 16, 16, "Coin", this));
+                                break;
                             case "H":
                                 hero = new Hero(x, y, 32, 32, 5, new List<string>() { "Balls", "Balls45", "Balls90", "Balls135", "Balls180", "Balls225", "Balls270", "Balls315" }, this);
                                 break;
@@ -148,6 +152,7 @@ namespace Gloopy
 
             AllSprite.AddRange(Characters);
             AllSprite.AddRange(Blocks);
+            AllSprite.AddRange(Collectables);
 
             _camera = new Camera2D(this);
 
@@ -240,11 +245,19 @@ namespace Gloopy
         {
             Rectangle Pos;
             Vector2 Origin;
+            bool canDraw = true;
             switch (sprite.Type)
             {
                 case TypeSprite.Character:
                     Pos = new Rectangle(0, 0, sprite.Box.Width, sprite.Box.Height);
                     Origin = new Vector2(sprite.Box.Width, sprite.Box.Height);
+                    break;
+                case TypeSprite.Collectable:
+                    Collectable bonus = (Collectable)sprite;
+                    if (bonus.IsCollect)
+                    {
+                        canDraw = false;
+                    }
                     break;
                 default:
                     Pos = new Rectangle(0, 0, sprite.Box.Width, sprite.Box.Height);
@@ -252,9 +265,12 @@ namespace Gloopy
                     break;
             }
 
-            spriteBatch.Begin(SpriteSortMode.BackToFront, GraphicsDevice.BlendStates.NonPremultiplied, null, null, null, null, _camera.get_transformation()); //SpriteSortMode.Deferred, GraphicsDevice.BlendStates.NonPremultiplied
-            spriteBatch.Draw(sprite.Texture, sprite.Box, Color.White);
-            spriteBatch.End();
+            if (canDraw)
+            {
+                spriteBatch.Begin(SpriteSortMode.BackToFront, GraphicsDevice.BlendStates.NonPremultiplied, null, null, null, null, _camera.get_transformation()); //SpriteSortMode.Deferred, GraphicsDevice.BlendStates.NonPremultiplied
+                spriteBatch.Draw(sprite.Texture, sprite.Box, Color.White);
+                spriteBatch.End();
+            }
         }
 
         private void CheckForCollision()
@@ -289,6 +305,19 @@ namespace Gloopy
                     { //Collision right side of the hero
                         hero.SetPositionX(block.Box.Left - hero.Box.Width);
                         hero.IsBlockedRight = true;
+                    }
+                }
+            }
+
+            foreach(var bonus in Collectables)
+            {
+                if (!bonus.IsCollect)
+                {
+                    if(hero.Box.Intersects(bonus.Box))
+                    {
+                        bonus.IsCollect = true;
+                        hero.AddBonus(bonus);
+                        //Ajouter un son de récolte
                     }
                 }
             }

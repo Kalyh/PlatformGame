@@ -10,6 +10,7 @@ namespace Gloopy.Utils
     {
         Block,
         Sprite,
-        Character
+        Character,
+        Collectable
     }
 }

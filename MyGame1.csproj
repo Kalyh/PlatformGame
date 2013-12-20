@@ -96,6 +96,7 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="Content\03_rocket_flight.wav" />
+    <ToolkitTexture Include="Content\Coin.png" />
     <Content Include="Content\gloopy.jpg" />
     <Content Include="Content\Mario_saut.wav" />
     <None Include="Resources\gloopy.jpg" />

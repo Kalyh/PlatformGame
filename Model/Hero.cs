@@ -24,6 +24,8 @@ namespace Gloopy.Model
 
         private Vector2 _velocity = Vector2.Zero;
 
+        private List<Collectable> _bonus = new List<Collectable>();
+
         private AudioPlayer audiop;
         #endregion
 
@@ -36,6 +38,8 @@ namespace Gloopy.Model
         public bool IsFinishJump { get { return _isFinishJump; } set { _isFinishJump = value; } }
 
         public Vector2 Velocity { get { return _velocity; } set { _velocity = value; } }
+
+        public List<Collectable> Bonus { get { return _bonus; } }
         #endregion
 
         #region ----- CONSTRUCTORS -----
@@ -56,9 +60,9 @@ namespace Gloopy.Model
                 case Keys.Right:
                     this._box.X += (int)this._speed;
 
-                    if (this._box.X > this._game.WorldWidth)
+                    if (this._box.Right > this._game.WorldWidth)
                     {
-                        this._box.X = this._game.WorldWidth;
+                        this._box.X = this._game.WorldWidth - this._box.Width;
                         break;
                     }
 
@@ -84,9 +88,9 @@ namespace Gloopy.Model
                 case Keys.Left:
                     this._box.X -= (int)this._speed;
 
-                    if (this._box.X < this._box.Width)
+                    if (this._box.Left < 0)
                     {
-                        this._box.X = this._box.Width;
+                        this._box.X = 0;
                         break;
                     }
 
@@ -156,6 +160,11 @@ namespace Gloopy.Model
 
             if (!IsJumping)
                 audiop.kill();
+        }
+
+        public void AddBonus(Collectable bonus)
+        {
+            _bonus.Add(bonus);
         }
         #endregion
     }
