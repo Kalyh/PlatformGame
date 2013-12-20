@@ -1,11 +1,11 @@
-﻿using MyGame1.Utils;
+﻿using Gloopy.Utils;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace MyGame1.Model
+namespace Gloopy.Model
 {
     class Character : BaseSprite
     {

@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace MyGame1.Utils
+namespace Gloopy.Utils
 {
     public enum TypeSprite
     {

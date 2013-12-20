@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace MyGame1.Model
+namespace Gloopy.Model
 {
     class Camera2D
     {

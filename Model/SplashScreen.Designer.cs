@@ -1,4 +1,4 @@
-﻿namespace MyGame1.Model
+﻿namespace Gloopy.Model
 {
     partial class SplashScreen
     {
@@ -34,7 +34,7 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.BackgroundImage = global::MyGame1.Properties.Resources.gloopy;
+            this.BackgroundImage = global::Gloopy.Properties.Resources.gloopy;
             this.ClientSize = new System.Drawing.Size(599, 406);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.None;
             this.MaximumSize = new System.Drawing.Size(599, 406);

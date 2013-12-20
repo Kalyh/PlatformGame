@@ -1,12 +1,12 @@
-﻿using MyGame1.Model;
+﻿using Gloopy.Model;
 using System;
 using System.Collections.Generic;
 using System.Threading;
 
-namespace MyGame1
+namespace Gloopy
 {
     /// <summary>
-    /// Simple MyGame1 application using SharpDX.Toolkit.
+    /// Simple Gloopy application using SharpDX.Toolkit.
     /// </summary>
     class Program
     {

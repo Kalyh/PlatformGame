@@ -1,4 +1,4 @@
-﻿using MyGame1.Utils;
+﻿using Gloopy.Utils;
 using SharpDX;
 using SharpDX.Toolkit.Graphics;
 using System;
@@ -7,7 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace MyGame1.Model
+namespace Gloopy.Model
 {
     class BaseSprite
     {

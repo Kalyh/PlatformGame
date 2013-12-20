@@ -1,6 +1,6 @@
 ﻿using MP3player;
-using MyGame1.Model;
-using MyGame1.Utils;
+using Gloopy.Model;
+using Gloopy.Utils;
 using SharpDX;
 using SharpDX.IO;
 using SharpDX.MediaFoundation;
@@ -17,7 +17,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Runtime.InteropServices;
 
-namespace MyGame1
+namespace Gloopy
 {
     class MyGame : Game
     {

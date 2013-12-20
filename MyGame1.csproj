@@ -9,8 +9,8 @@
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>{39D5DFE6-4914-4FD7-8753-45EAD45CB413}</ProjectGuid>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>MyGame1</RootNamespace>
-    <AssemblyName>MyGame1</AssemblyName>
+    <RootNamespace>Gloopy</RootNamespace>
+    <AssemblyName>Gloopy</AssemblyName>
     <FileAlignment>512</FileAlignment>
     <!-- Platform Dependent Properties -->
     <OutputType>WinExe</OutputType>
@@ -55,6 +55,7 @@
     <Compile Include="Model\Block.cs" />
     <Compile Include="Model\Camera2D.cs" />
     <Compile Include="Model\Character.cs" />
+    <Compile Include="Model\Collectable.cs" />
     <Compile Include="Model\Hero.cs" />
     <Compile Include="Model\SplashScreen.cs">
       <SubType>Form</SubType>

@@ -1,5 +1,5 @@
 ﻿using MP3player;
-using MyGame1.Utils;
+using Gloopy.Utils;
 using SharpDX;
 using SharpDX.Toolkit.Graphics;
 using SharpDX.Toolkit.Input;
@@ -10,7 +10,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace MyGame1.Model
+namespace Gloopy.Model
 {
     class Hero : Character
     {

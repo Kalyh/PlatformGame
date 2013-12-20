@@ -8,7 +8,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
-namespace MyGame1.Model
+namespace Gloopy.Model
 {
     public partial class SplashScreen : Form
     {
