@@ -143,15 +143,7 @@ namespace MyGame1
                     y += _sectionHeight;
                 }
             }
-
-            /*hero = new Hero(32f, _surface, 32, 32, 5, new List<string>() { "Balls", "Balls45", "Balls90", "Balls135", "Balls180", "Balls225", "Balls270", "Balls315" }, this);
-            Blocks.Add(new Block(250f, _surface, 32, 32, "Spike", this));
-            Blocks.Add(new Block(282f, _surface, 32, 32, "Spike", this));
-            Blocks.Add(new Block(400f, _surface, 32, 32, "Spike", this));
-            Blocks.Add(new Block(650f, _surface, 32, 32, "Spike", this));
-            Blocks.Add(new Block(150f, _surface - 50, 32, 32, "Spike", this));*/
-
-
+			
             Characters.Add(hero);
 
             AllSprite.AddRange(Characters);
@@ -225,21 +217,15 @@ namespace MyGame1
 
         protected override void Draw(GameTime gameTime)
         {
-            // Use time in seconds directly
-            var time = (float)gameTime.TotalGameTime.TotalSeconds;
-
             // Clears the screen with the Color.CornflowerBlue
             GraphicsDevice.Clear(Color.Black);
 
-            // ------------------------------------------------------------------------
-            // Use SpriteBatch to draw some balls on the screen using NonPremultiplied mode
-            // as the sprite texture used is not premultiplied
-            // ------------------------------------------------------------------------
-
+            // Draw the background of the stage
             spriteBatch.Begin(SpriteSortMode.BackToFront, GraphicsDevice.BlendStates.AlphaBlend, null, null, null, null, _camera.get_transformation());
             spriteBatch.Draw(Background, new Rectangle(0, 0, _worldWidth, _worldHeight), Color.White);
             spriteBatch.End();
 
+            // Draw all the sprite of the game
             foreach (BaseSprite item in AllSprite)
             {
                 DrawSprite(item);
