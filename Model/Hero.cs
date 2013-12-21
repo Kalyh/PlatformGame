@@ -132,33 +132,42 @@ namespace Gloopy.Model
 
         public void DoJump(float time)
         {
+            /*if (_isJumping)
+            {
+                Velocity += this._game.Gravity * time;
+                _box.Y -= (int)(this._game.Gravity - Velocity).Y;
+            }
+
+            if (_box.Bottom >= this._game.Surface)
+            {
+                _box.Y = (int)this._game.Surface - _box.Height;
+                _isJumping = false;
+                _canJump = true;
+            }*/
+
             if (_isJumping && !_isFinishJump)
             {
-                if (_currentJump >= _jump)
-                {
-                    _isFinishJump = true;
-                }
-                else
-                {
-                    _currentJump += this._game.Gravity.Y;
-                    _box.Y -= (int)this._game.Gravity.Y;
-                }
+                _velocity += this._game.Gravity * time;
+
+                _box.Y -= (int)(this._game.Gravity - _velocity).Y;
             }
 
             if (_isJumping && _isFinishJump && _box.Y < this._game.Surface)
             {
-                _currentJump -= this._game.Gravity.Y;
+                //Améliorer la chute
                 _box.Y += (int)this._game.Gravity.Y;
             }
        
             if (_box.Bottom >= this._game.Surface)
             {
                 _box.Y = (int)this._game.Surface - _box.Height;
+                _velocity = Vector2.Zero;
                 _isJumping = false;
+                _isFinishJump = true;
                 _canJump = true;
             }
 
-            if (!IsJumping)
+            if (!_isJumping)
                 audiop.kill();
         }
 

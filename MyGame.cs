@@ -290,11 +290,13 @@ namespace Gloopy
                         hero.SetPositionY(block.Box.Top - (hero.Box.Height));
                         hero.CanJump = true;
                         hero.IsJumping = false;
+                        hero.IsFinishJump = true;
                         hero.Velocity = Vector2.Zero;
                     }
                     else if (hero.Box.Top <= block.Box.Bottom && hero.Box.Top > (block.Box.Top + (block.Box.Height / 2)))
                     {
                         hero.IsFinishJump = true;
+                        hero.Velocity = Vector2.Zero;
                     }
                     else if (hero.Box.Left <= block.Box.Right && hero.Box.Left > (block.Box.Left + (block.Box.Width / 2)))
                     { //Collision left side of the hero
