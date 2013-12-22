@@ -49,16 +49,14 @@ namespace Gloopy
         private SpriteFont arial16Font;
 
         private KeyboardManager keyboard;
-        private KeyboardState keyboardState;
 
         private MouseManager mouse;
-        private MouseState mouseState;
         
         private Stopwatch fpsTimer = new Stopwatch();
         private int fpsCounter = 0;
 
         private float _surface;
-        private Vector2 _gravity = new Vector2(0, 9.8f);
+        private Vector2 _gravity = new Vector2(0, 9.81f);
 
         private AudioPlayer audiop;
 
@@ -156,8 +154,8 @@ namespace Gloopy
 
             _camera = new Camera2D(this);
 
-           audiop.Open(Directory.GetParent(System.IO.Directory.GetCurrentDirectory()).Parent.FullName + @"\Content\03_rocket_flight.wav");
-           audiop.Play();            
+            audiop.Open(Directory.GetParent(System.IO.Directory.GetCurrentDirectory()).Parent.FullName + @"\Content\03_rocket_flight.wav");
+            audiop.Play();
         }
 
         protected override void LoadContent()
@@ -184,10 +182,10 @@ namespace Gloopy
             base.Update(gameTime);
 
             // Get the current state of the keyboard
-            keyboardState = keyboard.GetState();
+            KeyboardState keyboardState = keyboard.GetState();
 
             // Get the current state of the mouse
-            mouseState = mouse.GetState();
+            MouseState mouseState = mouse.GetState();
 
             fpsCounter++;
             if (fpsTimer.ElapsedMilliseconds > 1000)
@@ -275,11 +273,7 @@ namespace Gloopy
 
         private void CheckForCollision()
         {
-            if (hero.Box.Y < _surface)
-            {
-                hero.CanJump = false;
-                hero.IsJumping = true;
-            }
+            bool IsBlock = false;
 
             foreach(var block in Blocks)
             {
@@ -288,6 +282,9 @@ namespace Gloopy
                     if (hero.Box.Bottom >= block.Box.Top && hero.Box.Bottom < (block.Box.Bottom - (block.Box.Height / 2)))
                     { //Collision bottom side of the hero
                         hero.SetPositionY(block.Box.Top - (hero.Box.Height));
+
+                        IsBlock = true;
+
                         hero.CanJump = true;
                         hero.IsJumping = false;
                         hero.IsFinishJump = true;
@@ -296,7 +293,7 @@ namespace Gloopy
                     else if (hero.Box.Top <= block.Box.Bottom && hero.Box.Top > (block.Box.Top + (block.Box.Height / 2)))
                     {
                         hero.IsFinishJump = true;
-                        hero.Velocity = Vector2.Zero;
+                        hero.Velocity = _gravity;
                     }
                     else if (hero.Box.Left <= block.Box.Right && hero.Box.Left > (block.Box.Left + (block.Box.Width / 2)))
                     { //Collision left side of the hero
@@ -309,6 +306,12 @@ namespace Gloopy
                         hero.IsBlockedRight = true;
                     }
                 }
+            }
+
+            if (!IsBlock)
+            {
+                hero.CanJump = false;
+                hero.IsJumping = true;
             }
 
             foreach(var bonus in Collectables)

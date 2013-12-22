@@ -132,32 +132,31 @@ namespace Gloopy.Model
 
         public void DoJump(float time)
         {
-            /*if (_isJumping)
+            if (!_isJumping)
             {
-                Velocity += this._game.Gravity * time;
-                _box.Y -= (int)(this._game.Gravity - Velocity).Y;
+                audiop.kill();
             }
-
-            if (_box.Bottom >= this._game.Surface)
-            {
-                _box.Y = (int)this._game.Surface - _box.Height;
-                _isJumping = false;
-                _canJump = true;
-            }*/
-
+            
             if (_isJumping && !_isFinishJump)
             {
                 _velocity += this._game.Gravity * time;
 
                 _box.Y -= (int)(this._game.Gravity - _velocity).Y;
-            }
 
+                Console.WriteLine("Box Y: " + _box.Y + ", Velocity: " + _velocity.Y + ", Box calcul: " + (this._game.Gravity - _velocity).Y);
+            }
+            
             if (_isJumping && _isFinishJump && _box.Y < this._game.Surface)
             {
                 //Améliorer la chute
+                /*_velocity += this._game.Gravity * time;
+
+                _box.Y -= (int)(this._game.Gravity - _velocity).Y;
+                Console.WriteLine("Box Y: " + _box.Y + ", Velocity: " + _velocity.Y + ", Box calcul: " + (this._game.Gravity - _velocity).Y);*/
+
                 _box.Y += (int)this._game.Gravity.Y;
             }
-       
+
             if (_box.Bottom >= this._game.Surface)
             {
                 _box.Y = (int)this._game.Surface - _box.Height;
@@ -166,9 +165,6 @@ namespace Gloopy.Model
                 _isFinishJump = true;
                 _canJump = true;
             }
-
-            if (!_isJumping)
-                audiop.kill();
         }
 
         public void AddBonus(Collectable bonus)
