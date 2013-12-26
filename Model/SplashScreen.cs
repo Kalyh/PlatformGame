@@ -10,7 +10,7 @@ using System.Windows.Forms;
 
 namespace Gloopy.Model
 {
-    public partial class SplashScreen : Form
+    public partial class SplashScreen : FadeForm
     {
         public SplashScreen()
         {

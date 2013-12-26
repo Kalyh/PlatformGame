@@ -35,10 +35,10 @@
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackgroundImage = global::Gloopy.Properties.Resources.gloopy;
-            this.ClientSize = new System.Drawing.Size(599, 406);
+            this.ClientSize = new System.Drawing.Size(599, 530);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.None;
-            this.MaximumSize = new System.Drawing.Size(599, 406);
-            this.MinimumSize = new System.Drawing.Size(599, 406);
+            this.MaximumSize = new System.Drawing.Size(599, 530);
+            this.MinimumSize = new System.Drawing.Size(599, 530);
             this.Name = "SplashScreen";
             this.Text = "SplashScreen";
             this.ResumeLayout(false);

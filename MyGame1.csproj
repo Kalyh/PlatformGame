@@ -57,6 +57,12 @@
     <Compile Include="Model\Character.cs" />
     <Compile Include="Model\Collectable.cs" />
     <Compile Include="Model\Hero.cs" />
+    <Compile Include="Model\Menu.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Model\Menu.Designer.cs">
+      <DependentUpon>Menu.cs</DependentUpon>
+    </Compile>
     <Compile Include="Model\SplashScreen.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -73,6 +79,9 @@
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
     <Compile Include="Utils\AudioPlayer.cs" />
+    <Compile Include="Utils\FadeForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Include="Utils\Util.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -100,17 +109,24 @@
     <Content Include="Content\gloopy.jpg" />
     <Content Include="Content\Mario_saut.wav" />
     <None Include="Resources\gloopy.jpg" />
+    <None Include="Content\quit.png" />
     <Content Include="World\1.map">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
   </ItemGroup>
   <ItemGroup>
+    <EmbeddedResource Include="Model\Menu.resx">
+      <DependentUpon>Menu.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Model\SplashScreen.resx">
       <DependentUpon>SplashScreen.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Utils\FadeForm.resx">
+      <DependentUpon>FadeForm.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

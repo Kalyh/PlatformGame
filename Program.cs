@@ -25,9 +25,9 @@ namespace Gloopy
             ss.Show();
             Thread.Sleep(2000);
             ss.Close();
-            using (var program = new MyGame())
-                program.Run();
-
+            Menu m = new Menu();
+            m.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
+            m.ShowDialog();
         }
     }
 }
