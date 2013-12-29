@@ -27,6 +27,7 @@ namespace Gloopy.Model
             this.OnClosing(new CancelEventArgs());
             using (var program = new MyGame())
                 program.Run();
+            this.Close();
         }
 
         private void btnQuit_Click(object sender, EventArgs e)
