@@ -1,0 +1,58 @@
+foreach (var pos in previousPos)
+{
+    spriteBatch.Begin(SpriteSortMode.Deferred, GraphicsDevice.BlendStates.NonPremultiplied);
+    spriteBatch.Draw(
+       ballsTexture,
+       new Vector2(pos[0], pos[1]),
+       new Rectangle(0, 0, 32, 32),
+       Color.White,
+       0.0f,
+       new Vector2(16, 16),
+       Vector2.One,
+       SpriteEffects.None,
+       0f);
+    spriteBatch.End();
+}
+
+if (mouseState.Left == ButtonState.Pressed)
+{
+    posX = mouseState.X * this.Window.ClientBounds.Right;
+    posY = mouseState.Y * this.Window.ClientBounds.Bottom;
+}
+
+if (mouseState.Right == ButtonState.Pressed)
+{
+    float tmpX = mouseState.X * this.Window.ClientBounds.Right;
+    float tmpY = mouseState.Y * this.Window.ClientBounds.Bottom;
+
+    spriteBatch.Begin(SpriteSortMode.Deferred, GraphicsDevice.BlendStates.NonPremultiplied);
+    spriteBatch.Draw(
+       ballsTexture,
+       new Vector2(tmpX, tmpY),
+       new Rectangle(0, 0, 32, 32),
+       Color.White,
+       0.0f,
+       new Vector2(16, 16),
+       Vector2.One,
+       SpriteEffects.None,
+       0f);
+    spriteBatch.End();
+
+    previousPos.Add(new List<float> { tmpX, tmpY });
+}
+
+//Console.WriteLine("BEFORE Hero position: " + hero.Position);
+//Console.WriteLine("BEFORE Hero min: " + boxHero.Minimum);
+//Console.WriteLine("BEFORE Hero max: " + boxHero.Maximum);
+//Console.WriteLine("BEFORE Block position: " + block.Position);
+//Console.WriteLine("BEFORE Block min: " + boxBlock.Minimum);
+//Console.WriteLine("BEFORE Block max: " + boxBlock.Maximum);
+
+//boxBlock = block.GetBoundingBox();
+//boxHero = hero.GetBoundingBox();
+//Console.WriteLine("AFTER Hero position: " + hero.Position);
+//Console.WriteLine("AFTER Hero min: " + boxHero.Minimum);
+//Console.WriteLine("AFTER Hero max: " + boxHero.Maximum);
+//Console.WriteLine("AFTER Block position: " + block.Position);
+//Console.WriteLine("AFTER Block min: " + boxBlock.Minimum);
+//Console.WriteLine("AFTER Block max: " + boxBlock.Maximum);
