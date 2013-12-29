@@ -49,14 +49,13 @@ namespace Gloopy
         private SpriteFont arial16Font;
 
         private KeyboardManager keyboard;
-
         private MouseManager mouse;
         
         private Stopwatch fpsTimer = new Stopwatch();
         private int fpsCounter = 0;
 
         private float _surface;
-        private Vector2 _gravity = new Vector2(0, 9.81f);
+        private Vector2 _gravity = new Vector2(0, -9.81f);
 
         private AudioPlayer audiop;
 
@@ -80,6 +79,9 @@ namespace Gloopy
         {
             // Creates a graphics manager. This is mandatory.
             graphicsDeviceManager = new GraphicsDeviceManager(this);
+
+            //graphicsDeviceManager.IsFullScreen = true;
+
             graphicsDeviceManager.PreferredBackBufferHeight = _windowHeight;
             graphicsDeviceManager.PreferredBackBufferWidth = _windowWidth;
 
@@ -129,13 +131,13 @@ namespace Gloopy
                             case ".":
                                 break;
                             case "S":
-                                Blocks.Add(new Block(x, y, 32, 32, "Spike", this));
+                                Blocks.Add(new Block(x, y, 32, 32, "Blocks/Spike", this));
                                 break;
                             case "C":
-                                Collectables.Add(new Collectable(x + 8, y + 8, 16, 16, "Coin", this));
+                                Collectables.Add(new Collectable(x + 8, y + 8, 16, 16, "Collectables/Coin", this));
                                 break;
                             case "H":
-                                hero = new Hero(x, y, 32, 32, 5, new List<string>() { "Balls", "Balls45", "Balls90", "Balls135", "Balls180", "Balls225", "Balls270", "Balls315" }, this);
+                                hero = new Hero(x, y, 32, 32, 5, new List<string>() { "Balls/Balls", "Balls/Balls45", "Balls/Balls90", "Balls/Balls135", "Balls/Balls180", "Balls/Balls225", "Balls/Balls270", "Balls/Balls315" }, this);
                                 break;
                             default:
                                 break;
@@ -154,7 +156,7 @@ namespace Gloopy
 
             _camera = new Camera2D(this);
 
-            audiop.Open(Directory.GetParent(System.IO.Directory.GetCurrentDirectory()).Parent.FullName + @"\Content\03_rocket_flight.wav");
+            audiop.Open(Directory.GetParent(System.IO.Directory.GetCurrentDirectory()).Parent.FullName + @"\Content\Songs\03_rocket_flight.wav");
             audiop.Play();
         }
 
@@ -172,15 +174,13 @@ namespace Gloopy
 
             // Loads a sprite font
             // The [Arial16.xml] file is defined with the build action [ToolkitFont] in the project
-            arial16Font = Content.Load<SpriteFont>("Arial16");
+            arial16Font = Content.Load<SpriteFont>("Fonts/Arial16");
 
             base.LoadContent();
         }
 
         protected override void Update(GameTime gameTime)
         {
-            base.Update(gameTime);
-
             // Get the current state of the keyboard
             KeyboardState keyboardState = keyboard.GetState();
 
@@ -197,14 +197,18 @@ namespace Gloopy
                 fpsCounter = 0;
             }
 
-            hero.DoJump((float)gameTime.ElapsedGameTime.TotalSeconds);
+            float time = (float)gameTime.ElapsedGameTime.TotalSeconds;
+
+            //Console.WriteLine("ISJUMPING: " + hero.IsJumping);
+
+            hero.DoJump(time);
 
             var pressedKeys = keyboardState.GetPressedKeys();
             foreach (var key in pressedKeys)
             {
                 if (key == Keys.Right || key == Keys.Left || key == Keys.Space)
                 {
-                    hero.Movements(key);
+                    hero.Movements(key, time);
                 }
                 else if (key == Keys.Escape)
                 {
@@ -216,6 +220,8 @@ namespace Gloopy
             }
 
             CheckForCollision();
+
+            base.Update(gameTime);
         }
 
         protected override void Draw(GameTime gameTime)
@@ -273,7 +279,7 @@ namespace Gloopy
 
         private void CheckForCollision()
         {
-            bool IsBlock = false;
+            bool IsBlocked = false;
 
             foreach(var block in Blocks)
             {
@@ -283,17 +289,17 @@ namespace Gloopy
                     { //Collision bottom side of the hero
                         hero.SetPositionY(block.Box.Top - (hero.Box.Height));
 
-                        IsBlock = true;
+                        IsBlocked = true;
 
                         hero.CanJump = true;
                         hero.IsJumping = false;
-                        hero.IsFinishJump = true;
+                        hero.IsJumpInterupt = true;
                         hero.Velocity = Vector2.Zero;
                     }
                     else if (hero.Box.Top <= block.Box.Bottom && hero.Box.Top > (block.Box.Top + (block.Box.Height / 2)))
-                    {
-                        hero.IsFinishJump = true;
-                        hero.Velocity = _gravity;
+                    { //Collision top side of the hero
+                        hero.IsJumpInterupt = true;
+                        hero.Velocity = Vector2.Zero;
                     }
                     else if (hero.Box.Left <= block.Box.Right && hero.Box.Left > (block.Box.Left + (block.Box.Width / 2)))
                     { //Collision left side of the hero
@@ -308,10 +314,22 @@ namespace Gloopy
                 }
             }
 
-            if (!IsBlock)
+            if (!hero.OnFloor && hero.Box.Bottom >= this._surface)
+            {
+                hero.SetPositionY((int)this._surface - hero.Box.Height);
+                hero.Velocity = Vector2.Zero;
+                hero.IsJumping = false;
+                hero.IsJumpInterupt = true;
+                hero.CanJump = true;
+                hero.OnFloor = true;
+
+                IsBlocked = true;
+            }
+
+            if (!hero.OnFloor && !IsBlocked)
             {
                 hero.CanJump = false;
-                hero.IsJumping = true;
+                //hero.IsJumping = false;
             }
 
             foreach(var bonus in Collectables)

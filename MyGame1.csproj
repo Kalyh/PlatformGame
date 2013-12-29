@@ -85,29 +85,27 @@
     <Compile Include="Utils\Util.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ToolkitTexture Include="Content\Spike.dds" />
+    <ToolkitTexture Include="Content\Blocks\Spike.dds" />
   </ItemGroup>
   <ItemGroup>
-    <ToolkitFont Include="Content\Arial16.xml" />
-  </ItemGroup>
-  <ItemGroup>
-    <ToolkitTexture Include="Content\Balls.png" />
-    <ToolkitTexture Include="Content\Balls135.png" />
-    <ToolkitTexture Include="Content\Balls180.png" />
-    <ToolkitTexture Include="Content\Balls225.png" />
-    <ToolkitTexture Include="Content\Balls270.png" />
-    <ToolkitTexture Include="Content\Balls315.png" />
-    <ToolkitTexture Include="Content\Balls45.png" />
-    <ToolkitTexture Include="Content\Balls90.png" />
+    <ToolkitFont Include="Content\Fonts\Arial16.xml" />
   </ItemGroup>
   <ItemGroup>
     <ToolkitTexture Include="Content\Background.jpg" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Content\03_rocket_flight.wav" />
-    <ToolkitTexture Include="Content\Coin.png" />
+    <Content Include="Content\Songs\03_rocket_flight.wav" />
+    <ToolkitTexture Include="Content\Collectables\Coin.png" />
+    <ToolkitTexture Include="Content\Balls\Balls.png" />
+    <ToolkitTexture Include="Content\Balls\Balls135.png" />
+    <ToolkitTexture Include="Content\Balls\Balls180.png" />
+    <ToolkitTexture Include="Content\Balls\Balls225.png" />
+    <ToolkitTexture Include="Content\Balls\Balls270.png" />
+    <ToolkitTexture Include="Content\Balls\Balls315.png" />
+    <ToolkitTexture Include="Content\Balls\Balls45.png" />
+    <ToolkitTexture Include="Content\Balls\Balls90.png" />
     <Content Include="Content\gloopy.jpg" />
-    <Content Include="Content\Mario_saut.wav" />
+    <Content Include="Content\Songs\Mario_saut.wav" />
     <None Include="Resources\gloopy.jpg" />
     <None Include="Content\quit.png" />
     <Content Include="World\1.map">

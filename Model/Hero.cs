@@ -15,12 +15,10 @@ namespace Gloopy.Model
     class Hero : Character
     {
         #region ---- PRIVATE VARIABLE ----
-        private float _jump = 120;
-        private float _currentJump = 0;
-
         private bool _canJump = true;
         private bool _isJumping = false;
-        private bool _isFinishJump = true;
+        private bool _isJumpInterupt = true;
+        private bool _onFloor = false;
 
         private Vector2 _velocity = Vector2.Zero;
 
@@ -30,12 +28,11 @@ namespace Gloopy.Model
         #endregion
 
         #region ----- PROPERTIES -----
-        public float Jump { get { return _jump; } }
-        public float CurrentJump { get { return _currentJump; } set { _currentJump = value; } }
 
         public bool CanJump { get { return _canJump; } set { _canJump = value; } }
         public bool IsJumping { get { return _isJumping; } set { _isJumping = value; } }
-        public bool IsFinishJump { get { return _isFinishJump; } set { _isFinishJump = value; } }
+        public bool IsJumpInterupt { get { return _isJumpInterupt; } set { _isJumpInterupt = value; } }
+        public bool OnFloor { get { return _onFloor; } set { _onFloor = value; } }
 
         public Vector2 Velocity { get { return _velocity; } set { _velocity = value; } }
 
@@ -48,12 +45,11 @@ namespace Gloopy.Model
         {
             this._speed = speed;
             audiop = new AudioPlayer("jump");
-          //  audiop.Open(Directory.GetParent(System.IO.Directory.GetCurrentDirectory()).Parent.FullName + @"\Content\Mario_saut.wav");
         }
         #endregion
 
         #region ----- PUBLIC METHODS -----
-        public void Movements(Keys direction)
+        public void Movements(Keys direction, float time)
         {
             switch (direction)
             {
@@ -119,10 +115,12 @@ namespace Gloopy.Model
                         audiop.Open(Directory.GetParent(System.IO.Directory.GetCurrentDirectory()).Parent.FullName + @"\Content\Mario_saut.wav");
                         audiop.Play();
 
-                        _currentJump = 0;
+                        _onFloor = false;
                         _canJump = false;
                         _isJumping = true;
-                        _isFinishJump = false;
+                        _isJumpInterupt = false;
+
+                        DoJump(time);
                     }
                     break;
             }
@@ -136,34 +134,31 @@ namespace Gloopy.Model
             {
                 audiop.kill();
             }
-            
-            if (_isJumping && !_isFinishJump)
+
+            if (!_onFloor)
             {
-                _velocity += this._game.Gravity * time;
+                if (_isJumping && !_isJumpInterupt)
+                {
+                    _velocity += this._game.Gravity * time * 2f;
 
-                _box.Y -= (int)(this._game.Gravity - _velocity).Y;
+                    _box.Y += (int)(this._game.Gravity - _velocity).Y;
 
-                Console.WriteLine("Box Y: " + _box.Y + ", Velocity: " + _velocity.Y + ", Box calcul: " + (this._game.Gravity - _velocity).Y);
-            }
-            
-            if (_isJumping && _isFinishJump && _box.Y < this._game.Surface)
-            {
-                //Améliorer la chute
-                /*_velocity += this._game.Gravity * time;
+                    //Console.WriteLine("Box Y: " + _box.Y + ", Velocity: " + _velocity.Y + ", Box calcul: " + (this._game.Gravity - _velocity).Y);
+                }
 
-                _box.Y -= (int)(this._game.Gravity - _velocity).Y;
-                Console.WriteLine("Box Y: " + _box.Y + ", Velocity: " + _velocity.Y + ", Box calcul: " + (this._game.Gravity - _velocity).Y);*/
+                if (!_isJumping && _isJumpInterupt && _box.Y < this._game.Surface)
+                {
+                    _box.Y -= (int)this._game.Gravity.Y;
+                }
 
-                _box.Y += (int)this._game.Gravity.Y;
-            }
+                if (_isJumping && _isJumpInterupt && _box.Y < this._game.Surface)
+                {
+                    //Améliorer la chute
+                    _velocity += this._game.Gravity * time;
 
-            if (_box.Bottom >= this._game.Surface)
-            {
-                _box.Y = (int)this._game.Surface - _box.Height;
-                _velocity = Vector2.Zero;
-                _isJumping = false;
-                _isFinishJump = true;
-                _canJump = true;
+                    _box.Y -= (int)(this._game.Gravity + _velocity).Y;
+                    //Console.WriteLine("Box Y: " + _box.Y + ", Velocity: " + _velocity.Y + ", Box calcul: " + (this._game.Gravity - _velocity).Y);
+                }
             }
         }
 
