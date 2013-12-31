@@ -13,4 +13,11 @@ namespace Gloopy.Utils
         Character,
         Collectable
     }
+
+    public enum Bonus
+    {
+        None,
+        Speed,
+        Gravity
+    }
 }

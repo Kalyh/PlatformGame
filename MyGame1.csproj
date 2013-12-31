@@ -94,6 +94,9 @@
     <ToolkitTexture Include="Content\Background.jpg" />
   </ItemGroup>
   <ItemGroup>
+    <ToolkitTexture Include="Content\Blocks\Grass.png" />
+    <ToolkitTexture Include="Content\Blocks\Dirt.png" />
+    <ToolkitTexture Include="Content\Blocks\Platform.png" />
     <Content Include="Content\Songs\03_rocket_flight.wav" />
     <ToolkitTexture Include="Content\Collectables\Coin.png" />
     <ToolkitTexture Include="Content\Balls\Balls.png" />

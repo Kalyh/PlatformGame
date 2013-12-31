@@ -122,7 +122,7 @@ namespace Gloopy
                 int y = 0;
                 foreach (var line in lines)
                 {
-                    x = _sectionWidth;
+                    x = 0;
                     string[] elements = line.Split(' ');
                     foreach (var element in elements)
                     {
@@ -133,11 +133,20 @@ namespace Gloopy
                             case "S":
                                 Blocks.Add(new Block(x, y, 32, 32, "Blocks/Spike", this));
                                 break;
+                            case "D":
+                                Blocks.Add(new Block(x, y, 32, 32, "Blocks/Dirt", this));
+                                break;
+                            case "G":
+                                Blocks.Add(new Block(x, y, 32, 32, "Blocks/Grass", this));
+                                break;
+                            case "P":
+                                Blocks.Add(new Block(x, y, 32, 20, "Blocks/Platform", this));
+                                break;
                             case "C":
                                 Collectables.Add(new Collectable(x + 8, y + 8, 16, 16, "Collectables/Coin", this));
                                 break;
                             case "H":
-                                hero = new Hero(x, y, 32, 32, 5, new List<string>() { "Balls/Balls", "Balls/Balls45", "Balls/Balls90", "Balls/Balls135", "Balls/Balls180", "Balls/Balls225", "Balls/Balls270", "Balls/Balls315" }, this);
+                                hero = new Hero(x, y, 20, 32, 5, new List<string>() { "Balls/Balls", "Balls/Balls45", "Balls/Balls90", "Balls/Balls135", "Balls/Balls180", "Balls/Balls225", "Balls/Balls270", "Balls/Balls315" }, this);
                                 break;
                             default:
                                 break;
@@ -198,28 +207,25 @@ namespace Gloopy
             }
 
             float time = (float)gameTime.ElapsedGameTime.TotalSeconds;
+            Keys[] keys = keyboardState.GetPressedKeys();
 
-            //Console.WriteLine("ISJUMPING: " + hero.IsJumping);
-
-            hero.DoJump(time);
-
-            var pressedKeys = keyboardState.GetPressedKeys();
-            foreach (var key in pressedKeys)
+            foreach (var key in keys)
             {
-                if (key == Keys.Right || key == Keys.Left || key == Keys.Space)
-                {
-                    hero.Movements(key, time);
-                }
-                else if (key == Keys.Escape)
+                if (key == Keys.Escape)
                 {
                     this.Exit();
                 }
-                else
-                {
-                }
             }
 
-            CheckForCollision();
+            hero.Update(time, keys);
+
+            bool blockJump = true;
+            /*if (hero.IsJumping && (keys.Contains(Keys.Left) || keys.Contains(Keys.Right)))
+            {
+                blockJump = false;
+            }*/
+
+            CheckForCollision(blockJump);
 
             base.Update(gameTime);
         }
@@ -277,10 +283,11 @@ namespace Gloopy
             }
         }
 
-        private void CheckForCollision()
+        private void CheckForCollision(bool blockJump)
         {
             bool IsBlocked = false;
 
+            //Hero collision with the blocks
             foreach(var block in Blocks)
             {
                 if (hero.Box.Intersects(block.Box))
@@ -298,8 +305,11 @@ namespace Gloopy
                     }
                     else if (hero.Box.Top <= block.Box.Bottom && hero.Box.Top > (block.Box.Top + (block.Box.Height / 2)))
                     { //Collision top side of the hero
-                        hero.IsJumpInterupt = true;
-                        hero.Velocity = Vector2.Zero;
+                        if (blockJump)
+                        {
+                            hero.IsJumpInterupt = true;
+                            hero.Velocity = Vector2.Zero;
+                        }
                     }
                     else if (hero.Box.Left <= block.Box.Right && hero.Box.Left > (block.Box.Left + (block.Box.Width / 2)))
                     { //Collision left side of the hero
@@ -314,6 +324,7 @@ namespace Gloopy
                 }
             }
 
+            //Detects if the hero is on the floor of the level.
             if (!hero.OnFloor && hero.Box.Bottom >= this._surface)
             {
                 hero.SetPositionY((int)this._surface - hero.Box.Height);
@@ -332,6 +343,7 @@ namespace Gloopy
                 //hero.IsJumping = false;
             }
 
+            //Hero collision with collectables items
             foreach(var bonus in Collectables)
             {
                 if (!bonus.IsCollect)

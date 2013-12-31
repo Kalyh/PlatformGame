@@ -48,8 +48,8 @@ namespace Gloopy.Model
         }
         #endregion
 
-        #region ----- PUBLIC METHODS -----
-        public void Movements(Keys direction, float time)
+        #region ----- PRIVATE METHODS -----
+        private void Movements(Keys direction, float time)
         {
             switch (direction)
             {
@@ -128,7 +128,7 @@ namespace Gloopy.Model
             this._isBlockedRight = false;
         }
 
-        public void DoJump(float time)
+        private void DoJump(float time)
         {
             if (!_isJumping)
             {
@@ -161,10 +161,36 @@ namespace Gloopy.Model
                 }
             }
         }
+        #endregion
 
+        #region ----- PUBLIC METHODS -----
         public void AddBonus(Collectable bonus)
         {
             _bonus.Add(bonus);
+
+            switch(bonus.BonusType)
+            {
+                case Utils.Bonus.Speed:
+                    break;
+                case Utils.Bonus.Gravity:
+                    break;
+                case Utils.Bonus.None:
+                default:
+                    break;
+            }
+        }
+
+        public void Update(float time, Keys[] keys)
+        {
+            this.DoJump(time);
+
+            foreach (var key in keys)
+            {
+                if (key == Keys.Right || key == Keys.Left || key == Keys.Space)
+                {
+                    this.Movements(key, time);
+                }
+            }
         }
         #endregion
     }
